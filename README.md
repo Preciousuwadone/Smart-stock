@@ -2,7 +2,7 @@
 
 **AI-powered digital credit book for Nigerian small business owners.**
 
-SmartStock replaces the notebook credit ledger many Nigerian shop owners still use to track goods sold on credit. It gives every customer a dedicated Nomba virtual account for repayment, uses AI to score repayment risk, and confirms payments in real time via webhooks — so shop owners always know who owes what, and who's likely to default.
+SmartStock replaces the notebook credit ledger many Nigerian shop owners still use to track goods sold on credit. It gives every customer a dedicated Nomba virtual account for repayment, uses AI to score repayment risk, and confirms payments in real time via webhooks so shop owners always know who owes what, and who's likely to default.
 
 Built solo for the **DevCareer x Nomba Hackathon 2026** by Precious Uwadone, final-year Computer Science student at Pan-Atlantic University.
 
@@ -10,7 +10,7 @@ Built solo for the **DevCareer x Nomba Hackathon 2026** by Precious Uwadone, fin
 
 ## The problem
 
-Small business owners across Nigeria supply goods on credit to known customers, tracked in physical notebooks. This leads to billions of naira in uncollected debt annually — no visibility into who owes what, no early warning on who's likely to default, and no affordable, purpose-built tool for this informal credit economy.
+Small business owners across Nigeria supply goods on credit to known customers, tracked in physical notebooks. This leads to billions of naira in uncollected debt annually no visibility into who owes what, no early warning on who's likely to default, and no affordable, purpose-built tool for this informal credit economy.
 
 ## How SmartStock solves it
 
