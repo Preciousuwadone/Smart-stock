@@ -5,6 +5,8 @@ from sqlalchemy import text
 from app.extensions import db
 from app.models import Customer, VirtualAccount, CreditTransaction, Payment
 from app.services.nomba_client import NombaClient, NombaAccountLimitReached, simulate_virtual_account
+from app.ml.scoring import score_customer
+from app.models import CreditScore
 
 customers_bp = Blueprint("customers", __name__, url_prefix="/api/customers")
 
@@ -216,4 +218,51 @@ def add_credit_transaction(customer_id):
         "amount": str(transaction.amount),
         "due_date": transaction.due_date.isoformat() if transaction.due_date else None,
         "created_at": transaction.created_at.isoformat(),
+    }), 201
+
+@customers_bp.route("/<customer_id>/score", methods=["POST"])
+@jwt_required()
+def generate_score(customer_id):
+    shop_id = get_jwt_identity()
+    customer = _get_owned_customer(shop_id, customer_id)
+    if not customer:
+        return jsonify({"error": "Customer not found"}), 404
+
+    # Pull real transaction/payment history from Postgres
+    transactions = CreditTransaction.query.filter_by(customer_id=customer.id).all()
+    payments = Payment.query.filter_by(customer_id=customer.id, status="confirmed").all()
+
+    if not transactions:
+        return jsonify({"error": "Customer has no credit history yet — nothing to score"}), 400
+
+    # Convert DB rows into the plain-dict shape score_customer() expects —
+    # this is the ONE place DB models meet the ML feature logic, so the
+    # translation has to be exact (amount as float, dates as date objects).
+    txn_dicts = [
+        {"amount": float(t.amount), "created_at": t.created_at.date(), "due_date": t.due_date}
+        for t in transactions
+    ]
+    payment_dicts = [
+        {"amount": float(p.amount), "paid_at": p.paid_at.date() if p.paid_at else None}
+        for p in payments if p.paid_at is not None
+    ]
+
+    result = score_customer(txn_dicts, payment_dicts, customer.customer_since)
+
+    # Save to credit_scores — history kept, not overwritten, per the schema design
+    credit_score = CreditScore(
+        customer_id=customer.id,
+        score=result["score"],
+        risk_tier=result["risk_tier"],
+        features=result["features"],
+        model_version=result["model_version"],
+    )
+    db.session.add(credit_score)
+    db.session.commit()
+
+    return jsonify({
+        "score": result["score"],
+        "risk_tier": result["risk_tier"],
+        "default_probability": result["default_probability"],
+        "features": result["features"],
     }), 201
