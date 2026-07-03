@@ -5,7 +5,6 @@ from sqlalchemy import text
 from app.extensions import db
 from app.models import Customer, VirtualAccount, CreditTransaction, Payment
 from app.services.nomba_client import NombaClient, NombaAccountLimitReached, simulate_virtual_account
-from app.ml.scoring import score_customer
 from app.models import CreditScore
 
 customers_bp = Blueprint("customers", __name__, url_prefix="/api/customers")
@@ -223,6 +222,7 @@ def add_credit_transaction(customer_id):
 @customers_bp.route("/<customer_id>/score", methods=["POST"])
 @jwt_required()
 def generate_score(customer_id):
+    from app.ml.scoring import score_customer
     shop_id = get_jwt_identity()
     customer = _get_owned_customer(shop_id, customer_id)
     if not customer:
