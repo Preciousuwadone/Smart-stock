@@ -4,7 +4,7 @@ from sqlalchemy import text
 from app.extensions import db
 from app.models import Reminder
 from app.services.nomba_client import NombaClient
-from app.services.twilio_client import send_sms
+from app.services.termii_client import send_sms
 
 reminders_bp = Blueprint("reminders", __name__, url_prefix="/api/customers")
 

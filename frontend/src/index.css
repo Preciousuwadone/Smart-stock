@@ -1,0 +1,6 @@
+body { margin: 0; background: #fafafa; }
+input, button { font-size: 14px; padding: 8px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+button { cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 4px; padding: 8px 16px; width: auto; }
+button:disabled { background: #93c5fd; cursor: not-allowed; }
+a { color: #2563eb; }
+table { width: 100%; }
