@@ -6,9 +6,9 @@ from app.extensions import db
 from app.models import Customer, VirtualAccount, CreditTransaction, Payment
 from app.services.nomba_client import NombaClient, NombaAccountLimitReached, simulate_virtual_account
 from app.models import CreditScore
+import uuid
 
 customers_bp = Blueprint("customers", __name__, url_prefix="/api/customers")
-
 
 def _get_owned_customer(shop_id, customer_id):
     """
@@ -60,7 +60,7 @@ def add_customer():
 
     virtual_account = VirtualAccount(
         customer_id=customer.id,
-        nomba_account_id=account_data.get("accountHolderId") or account_data["accountRef"],
+        nomba_account_id=account_data.get("accountRef") or str(uuid.uuid4()),
         account_number=account_data["bankAccountNumber"],
         bank_name=account_data.get("bankName", "Nomba"),
         account_name=account_data.get("bankAccountName", customer.full_name),

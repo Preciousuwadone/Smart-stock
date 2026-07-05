@@ -5,7 +5,6 @@ from app.models import Shop
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
-
 @auth_bp.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json(silent=True) or {}

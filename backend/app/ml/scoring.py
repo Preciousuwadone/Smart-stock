@@ -27,14 +27,6 @@ def score_customer(transactions: list, payments: list, customer_since) -> dict:
 
     feats = extract_features(transactions, payments, customer_since)
 
-    # Pass a DataFrame with named columns, not a raw list — this is what the
-    # model was trained on (train_model.py trains on a pandas DataFrame), and
-    # avoids scikit-learn's "no feature names" warning. More importantly, it
-    # guarantees the model always sees columns in the exact order it was
-    # trained with, even if features.py changes later and this file isn't
-    # updated in lockstep — reading feature_order from model.pkl itself
-    # (rather than importing FEATURE_ORDER separately) ties scoring to
-    # whatever the loaded model actually expects.
     vector_df = pd.DataFrame([features_to_vector(feats)], columns=feature_order)
 
     if needs_scaling:

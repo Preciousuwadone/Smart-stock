@@ -94,3 +94,15 @@ class CreditScore(db.Model):
     features = db.Column(JSONB, default={})
     model_version = db.Column(db.String, default="v1")
     created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)
+
+class Reminder(db.Model):
+    __tablename__ = "reminders"
+
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    shop_id = db.Column(UUID(as_uuid=True), db.ForeignKey("shops.id"), nullable=False)
+    customer_id = db.Column(UUID(as_uuid=True), db.ForeignKey("customers.id"), nullable=False)
+    channel = db.Column(db.String, default="sms")
+    message = db.Column(db.String, nullable=False)
+    checkout_link = db.Column(db.String, nullable=True)
+    status = db.Column(db.String, default="sent")
+    created_at = db.Column(db.DateTime(timezone=True), default=datetime.utcnow)

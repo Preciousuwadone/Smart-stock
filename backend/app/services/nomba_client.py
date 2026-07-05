@@ -4,7 +4,6 @@ import random
 import requests
 from flask import current_app
 
-
 class NombaClient:
     """
     Wraps Nomba's API. Handles token caching (tokens expire after 30 min,
@@ -77,6 +76,36 @@ class NombaClient:
 
         resp.raise_for_status()
         return resp.json()["data"]
+    
+    def create_checkout_order(self, amount: float, customer_id: str, customer_email: str = None):
+        """
+        Creates a Nomba checkout link for a specific amount — used for payment
+        reminders. amount must be a string with 2 decimal places per Nomba's spec.
+        """
+        payload = {
+            "order": {
+                "amount": f"{amount:.2f}",
+                "currency": "NGN",
+                "customerId": customer_id,
+                "orderReference": str(uuid.uuid4()),
+            }
+        }
+        if customer_email:
+            payload["order"]["customerEmail"] = customer_email
+
+        resp = requests.post(
+            f"{current_app.config['NOMBA_BASE_URL']}/v1/checkout/order",
+            headers=self._headers(),
+            json=payload,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        result = resp.json()
+
+        if result.get("code") != "00":
+            raise Exception(f"Nomba checkout creation failed: {result.get('description')}")
+
+        return result["data"]  # contains checkoutLink, orderReference
 
 
 class NombaAccountLimitReached(Exception):

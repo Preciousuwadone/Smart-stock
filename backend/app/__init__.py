@@ -14,8 +14,10 @@ def create_app():
 
     from app.auth.routes import auth_bp
     from app.customers.routes import customers_bp
+    from app.customers.reminder_routes import reminders_bp
     app.register_blueprint(auth_bp)
     app.register_blueprint(customers_bp)
+    app.register_blueprint(reminders_bp)
 
     @app.route("/health")
     def health():
