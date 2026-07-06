@@ -40,6 +40,7 @@ def add_customer():
         shop_id=shop_id,
         full_name=data["full_name"].strip(),
         phone=phone,
+        email=(data.get("email") or "").strip() or None,
         address=data.get("address"),
         notes=data.get("notes"),
     )
@@ -73,6 +74,7 @@ def add_customer():
         "id": str(customer.id),
         "full_name": customer.full_name,
         "phone": customer.phone,
+        "email": customer.email,
         "virtual_account": {
             "account_number": virtual_account.account_number,
             "bank_name": virtual_account.bank_name,
@@ -142,6 +144,7 @@ def get_customer(customer_id):
         "id": str(customer.id),
         "full_name": customer.full_name,
         "phone": customer.phone,
+        "email": customer.email,
         "address": customer.address,
         "notes": customer.notes,
         "customer_since": customer.customer_since.isoformat() if customer.customer_since else None,

@@ -57,6 +57,13 @@ CREATE TABLE customers (
 
 CREATE INDEX idx_customers_shop_id ON customers(shop_id);
 
+-- Migration: add email column to customers
+-- Run this against your already-deployed Railway Postgres DB — schema.sql
+-- only runs once on a fresh database, so existing deployments need this
+-- applied separately.
+
+ALTER TABLE customers ADD COLUMN IF NOT EXISTS email TEXT;
+
 -- ============================================================
 -- VIRTUAL_ACCOUNTS  (1:1 Nomba virtual account per customer)
 -- ============================================================
@@ -212,3 +219,5 @@ CREATE TRIGGER trg_customers_updated_at
 CREATE TRIGGER trg_virtual_accounts_updated_at
     BEFORE UPDATE ON virtual_accounts
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+

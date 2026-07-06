@@ -37,6 +37,7 @@ class Customer(db.Model):
     shop_id = db.Column(UUID(as_uuid=True), db.ForeignKey("shops.id"), nullable=False)
     full_name = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=True)
     address = db.Column(db.String, nullable=True)
     notes = db.Column(db.String, nullable=True)
     customer_since = db.Column(db.Date, default=datetime.utcnow)

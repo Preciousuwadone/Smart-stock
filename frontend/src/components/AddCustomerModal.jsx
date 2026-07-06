@@ -2,7 +2,7 @@ import { useState } from "react";
 import client from "../api/client";
 
 export default function AddCustomerModal({ onClose, onCreated }) {
-  const [form, setForm] = useState({ full_name: "", phone: "" });
+  const [form, setForm] = useState({ full_name: "", phone: "", email: "" });
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
 
@@ -29,6 +29,8 @@ export default function AddCustomerModal({ onClose, onCreated }) {
             onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />
           <input placeholder="Phone (e.g. 08011111111)" value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
+          <input placeholder="Email (for reminders)" type="email" value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })} />
           {error && <p style={{ color: "red" }}>{error}</p>}
           <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
             <button type="submit" disabled={saving}>{saving ? "Creating..." : "Create"}</button>
