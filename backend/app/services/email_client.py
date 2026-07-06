@@ -29,6 +29,11 @@ def send_email(to_email: str, subject: str, message: str) -> dict:
     smtp_user = os.environ.get("SMTP_USER")
     smtp_password = os.environ.get("SMTP_PASSWORD")
     from_name = os.environ.get("SMTP_FROM_NAME", "SmartStock")
+    # The address customers see as the sender. With providers like Brevo,
+    # SMTP_USER is a login credential (e.g. "12345@smtp-brevo.com"), not a
+    # real inbox — it can't be used as the visible From address. Falls back
+    # to SMTP_USER for providers like Gmail where the login IS the address.
+    from_email = os.environ.get("SMTP_FROM_EMAIL", smtp_user)
 
     if not smtp_user or not smtp_password:
         return {"success": False, "error": "SMTP credentials not configured"}
@@ -37,7 +42,7 @@ def send_email(to_email: str, subject: str, message: str) -> dict:
         return {"success": False, "error": "Customer has no email on file"}
 
     msg = MIMEMultipart()
-    msg["From"] = f"{from_name} <{smtp_user}>"
+    msg["From"] = f"{from_name} <{from_email}>"
     msg["To"] = to_email
     msg["Subject"] = subject
     msg.attach(MIMEText(message, "plain"))
@@ -46,7 +51,7 @@ def send_email(to_email: str, subject: str, message: str) -> dict:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
             server.starttls()
             server.login(smtp_user, smtp_password)
-            server.sendmail(smtp_user, [to_email], msg.as_string())
+            server.sendmail(from_email, [to_email], msg.as_string())
         return {"success": True}
     except smtplib.SMTPAuthenticationError:
         return {"success": False, "error": "SMTP authentication failed — check SMTP_USER/SMTP_PASSWORD"}
