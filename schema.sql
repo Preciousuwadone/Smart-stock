@@ -85,6 +85,20 @@ CREATE TABLE virtual_accounts (
 
 CREATE INDEX idx_virtual_accounts_customer_id ON virtual_accounts(customer_id);
 
+-- Migration: allow 'simulated' as a valid virtual_accounts.status value
+--
+-- The Nomba fallback logic sets status='simulated' when the sandbox's
+-- 2-real-account limit is hit, but the original CHECK constraint only
+-- allowed 'active', 'inactive', 'closed' — causing a 500 error on the
+-- 3rd customer added (psycopg2.errors.CheckViolation).
+--
+-- Run this against your Railway Postgres DB (same way you ran the
+-- email column migration).
+ALTER TABLE virtual_accounts DROP CONSTRAINT virtual_accounts_status_check;
+
+ALTER TABLE virtual_accounts
+    ADD CONSTRAINT virtual_accounts_status_check
+    CHECK (status IN ('active', 'inactive', 'closed', 'simulated'));
 -- ============================================================
 -- CREDIT_TRANSACTIONS  (goods given on credit — increases what's owed)
 -- ============================================================
