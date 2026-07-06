@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --force",
-    "build:clean": "vite build --force",
+    "build": "vite build",
+    "build:clean": "vite build",
     "lint": "oxlint",
     "start": "npx serve -s dist -l $PORT",
     "preview": "vite preview"
