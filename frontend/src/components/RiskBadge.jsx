@@ -1,24 +1,17 @@
 export default function RiskBadge({ tier }) {
   const colors = {
-    low: { bg: "#dcfce7", text: "#166534" },
-    medium: { bg: "#fef9c3", text: "#854d0e" },
-    high: { bg: "#fee2e2", text: "#991b1b" },
+    low: { bg: "#E7F6EC", text: "#1F9254" },
+    medium: { bg: "#FDF0DA", text: "#D6900F" },
+    high: { bg: "#FBEAEA", text: "#D64545" },
   };
-  const c = colors[tier] || { bg: "#e5e7eb", text: "#374151" };
+  const c = colors[tier] || { bg: "#EEF0F2", text: "#5B6472" };
 
   return (
-    <span
-      style={{
-        backgroundColor: c.bg,
-        color: c.text,
-        padding: "2px 10px",
-        borderRadius: "999px",
-        fontSize: "12px",
-        fontWeight: 600,
-        textTransform: "capitalize",
-      }}
-    >
-      {tier || "unscored"}
+    <span style={{
+      backgroundColor: c.bg, color: c.text, padding: "3px 11px", borderRadius: "999px",
+      fontSize: 12, fontWeight: 700, textTransform: "capitalize", whiteSpace: "nowrap",
+    }}>
+      {tier || "Unscored"}
     </span>
   );
 }

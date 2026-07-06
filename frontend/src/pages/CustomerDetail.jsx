@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import client from "../api/client";
 import RiskBadge from "../components/RiskBadge";
 import AddCreditModal from "../components/AddCreditModal";
+import AppHeader from "../components/AppHeader";
+import "../styles/AppShell.css";
 
 export default function CustomerDetail() {
   const { id } = useParams();
@@ -45,67 +47,146 @@ export default function CustomerDetail() {
     }
   };
 
-  if (!customer) return <p>Loading...</p>;
+  if (!customer) {
+    return (
+      <div>
+        <AppHeader />
+        <div className="app-page"><div className="app-loading">Loading customer…</div></div>
+      </div>
+    );
+  }
+
+  const outstanding = parseFloat(customer.balance.outstanding);
 
   return (
-    <div style={{ maxWidth: 700, margin: "40px auto", fontFamily: "sans-serif" }}>
-      <Link to="/">← Back</Link>
-      <h2>{customer.full_name}</h2>
-      <p>{customer.phone}</p>
+    <div>
+      <AppHeader />
+      <div className="app-page">
+        <Link to="/dashboard" className="app-back-link">← Back to customers</Link>
 
-      <div style={{ background: "#f3f4f6", padding: 16, borderRadius: 8, margin: "16px 0" }}>
-        <p><strong>Outstanding:</strong> ₦{parseFloat(customer.balance.outstanding).toLocaleString()}</p>
-        <p><strong>Total Credit:</strong> ₦{parseFloat(customer.balance.total_credit).toLocaleString()}</p>
-        <p><strong>Total Paid:</strong> ₦{parseFloat(customer.balance.total_paid).toLocaleString()}</p>
-        {customer.virtual_account && (
-          <p><strong>Repayment account:</strong> {customer.virtual_account.account_number} ({customer.virtual_account.bank_name})
-            {/*customer.virtual_account.status === "simulated" && <em> — simulated</em>*/}
-          </p>
-        )}
-      </div>
-
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-        <button onClick={() => setShowAddCredit(true)}>+ Record Credit Sale</button>
-        <button onClick={runScore} disabled={scoring}>{scoring ? "Scoring..." : "Run AI Credit Score"}</button>
-        <button onClick={sendReminder} disabled={reminding || customer.balance.outstanding <= 0}>
-          {reminding ? "Sending..." : "Send Reminder"}
-        </button>
-      </div>
-
-      {score && (
-        <div style={{ border: "1px solid #e5e7eb", padding: 16, borderRadius: 8, marginBottom: 16 }}>
-          <p><strong>Risk Score:</strong> {score.score}/100 <RiskBadge tier={score.risk_tier} /></p>
-          <p><strong>Default probability:</strong> {(score.default_probability * 100).toFixed(1)}%</p>
+        <div className="app-customer-head">
+          <div>
+            <h1>{customer.full_name}</h1>
+            <span className="app-customer-phone">{customer.phone}</span>
+          </div>
+          {score && <RiskBadge tier={score.risk_tier} />}
         </div>
-      )}
 
-      {reminderResult && (
-        <div style={{ border: "1px solid #e5e7eb", padding: 16, borderRadius: 8, marginBottom: 16 }}>
-          {reminderResult.error ? (
-            <p style={{ color: "red" }}>{reminderResult.error}</p>
+        <div className="app-balance-grid">
+          <div className="app-balance-card outstanding">
+            <div className="label">Outstanding</div>
+            <div className="value">₦{outstanding.toLocaleString()}</div>
+          </div>
+          <div className="app-balance-card">
+            <div className="label">Total Credit</div>
+            <div className="value">₦{parseFloat(customer.balance.total_credit).toLocaleString()}</div>
+          </div>
+          <div className="app-balance-card paid">
+            <div className="label">Total Paid</div>
+            <div className="value">₦{parseFloat(customer.balance.total_paid).toLocaleString()}</div>
+          </div>
+        </div>
+
+        {customer.virtual_account && (
+          <div className="app-va-card">
+            <div>
+              <div className="label">Repayment Account</div>
+              <div className="value">{customer.virtual_account.account_number} · {customer.virtual_account.bank_name}</div>
+            </div>
+            {customer.virtual_account.status === "simulated" && (
+              <span className="app-va-badge">Simulated (sandbox limit)</span>
+            )}
+          </div>
+        )}
+
+        <div className="app-actions">
+          <button onClick={() => setShowAddCredit(true)}>+ Record Credit Sale</button>
+          <button className="app-btn-secondary" onClick={runScore} disabled={scoring}>
+            {scoring ? "Scoring…" : "Run AI Credit Score"}
+          </button>
+          <button className="app-btn-secondary" onClick={sendReminder} disabled={reminding || outstanding <= 0}>
+            {reminding ? "Sending…" : "Send Reminder"}
+          </button>
+        </div>
+
+        {score && (
+          <div className="app-result-card">
+            <div className="app-result-row">
+              <span>Risk Score</span>
+              <strong>{score.score}/100</strong>
+            </div>
+            <div className="app-result-row">
+              <span>Default probability</span>
+              <strong>{(score.default_probability * 100).toFixed(1)}%</strong>
+            </div>
+          </div>
+        )}
+
+        {reminderResult && (
+          <div className={`app-result-card ${reminderResult.error ? "error" : ""}`}>
+            {reminderResult.error ? (
+              <p style={{ margin: 0, color: "var(--color-danger)" }}>{reminderResult.error}</p>
+            ) : (
+              <>
+                <div className="app-result-row">
+                  <span>Checkout link</span>
+                  <a href={reminderResult.checkout_link} target="_blank" rel="noreferrer">Open link ↗</a>
+                </div>
+                <div className="app-result-row">
+                  <span>Email</span>
+                  <span className={reminderResult.email_sent ? "app-result-ok" : "app-result-fail"}>
+                    {reminderResult.email_sent ? "Sent" : `Not sent (${reminderResult.email_error || "unknown"})`}
+                  </span>
+                </div>
+                <div className="app-result-row">
+                  <span>SMS</span>
+                  <span className={reminderResult.sms_sent ? "app-result-ok" : "app-result-fail"}>
+                    {reminderResult.sms_sent ? "Sent" : `Not sent (${reminderResult.sms_error || "not configured"})`}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        <h3 className="app-section-title">Transaction History</h3>
+        <div className="app-card">
+          {customer.transactions.length === 0 ? (
+            <div className="app-empty">No credit transactions yet.</div>
           ) : (
-            <>
-              <p>Checkout link: <a href={reminderResult.checkout_link} target="_blank" rel="noreferrer">{reminderResult.checkout_link}</a></p>
-              <p>Email sent: {reminderResult.email_sent ? "Yes" : `No (${reminderResult.email_error || "unknown"})`}</p>
-              <p>SMS sent: {reminderResult.sms_sent ? "Yes" : `No (${reminderResult.sms_error || "not configured"})`}</p>
-            </>
+            <ul className="app-list" style={{ padding: "4px 20px" }}>
+              {customer.transactions.map((t) => (
+                <li className="app-list-item" key={t.id}>
+                  <div>
+                    <div className="desc">{t.description}</div>
+                    <div className="meta">{new Date(t.created_at).toLocaleDateString()}</div>
+                  </div>
+                  <span className="app-list-amount">₦{parseFloat(t.amount).toLocaleString()}</span>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
-      )}
 
-      <h3>Transaction History</h3>
-      <ul>
-        {customer.transactions.map((t) => (
-          <li key={t.id}>{t.description} — ₦{parseFloat(t.amount).toLocaleString()} ({new Date(t.created_at).toLocaleDateString()})</li>
-        ))}
-      </ul>
-
-      <h3>Payment History</h3>
-      <ul>
-        {customer.payments.map((p) => (
-          <li key={p.id}>₦{parseFloat(p.amount).toLocaleString()} via {p.source} ({p.paid_at ? new Date(p.paid_at).toLocaleDateString() : "pending"})</li>
-        ))}
-      </ul>
+        <h3 className="app-section-title">Payment History</h3>
+        <div className="app-card">
+          {customer.payments.length === 0 ? (
+            <div className="app-empty">No payments recorded yet.</div>
+          ) : (
+            <ul className="app-list" style={{ padding: "4px 20px" }}>
+              {customer.payments.map((p) => (
+                <li className="app-list-item" key={p.id}>
+                  <div>
+                    <div className="desc">via {p.source}</div>
+                    <div className="meta">{p.paid_at ? new Date(p.paid_at).toLocaleDateString() : "Pending"}</div>
+                  </div>
+                  <span className="app-list-amount">₦{parseFloat(p.amount).toLocaleString()}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
 
       {showAddCredit && (
         <AddCreditModal

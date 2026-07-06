@@ -1,5 +1,6 @@
 import { useState } from "react";
 import client from "../api/client";
+import "../styles/AppShell.css";
 
 export default function AddCreditModal({ customerId, onClose, onCreated }) {
   const [form, setForm] = useState({ description: "", amount: "" });
@@ -24,18 +25,18 @@ export default function AddCreditModal({ customerId, onClose, onCreated }) {
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "white", padding: 24, borderRadius: 8, width: 320 }}>
+    <div className="app-modal-overlay" onClick={onClose}>
+      <div className="app-modal" onClick={(e) => e.stopPropagation()}>
         <h3>Record Credit Sale</h3>
         <form onSubmit={handleSubmit}>
           <input placeholder="Description (e.g. 2 bags of rice)" value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })} required />
-          <input placeholder="Amount (₦)" type="number" value={form.amount}
+          <input placeholder="Amount (₦)" type="number" min="0" step="0.01" value={form.amount}
             onChange={(e) => setForm({ ...form, amount: e.target.value })} required />
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-            <button type="submit" disabled={saving}>{saving ? "Saving..." : "Save"}</button>
-            <button type="button" onClick={onClose}>Cancel</button>
+          {error && <p className="app-modal-error">{error}</p>}
+          <div className="app-modal-actions">
+            <button type="button" className="app-btn-secondary" onClick={onClose}>Cancel</button>
+            <button type="submit" disabled={saving}>{saving ? "Saving…" : "Save"}</button>
           </div>
         </form>
       </div>
