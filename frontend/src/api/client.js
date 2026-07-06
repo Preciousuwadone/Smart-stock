@@ -1,7 +1,10 @@
 import axios from "axios";
 
+// Reads from frontend/.env (local dev) or the platform's env vars (Railway).
+// Falls back to the deployed backend if the variable isn't set, so nothing
+// breaks if it's missing — but production deploys should always set it explicitly.
 const client = axios.create({
-  baseURL: "https://smart-stock-production.up.railway.app", // swap to localhost:5000 for local dev
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://smart-stock-production.up.railway.app",
 });
 
 // Attach the JWT to every request automatically — no repeating this in every call.
