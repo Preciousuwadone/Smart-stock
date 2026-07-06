@@ -14,13 +14,13 @@ reminders_bp = Blueprint("reminders", __name__, url_prefix="/api/customers")
 def send_reminder(customer_id):
     shop_id = get_jwt_identity()
 
-    # Reuse the same ownership + balance lookup pattern as elsewhere —
-    # avoids a shop owner triggering reminders for another shop's customer.
     row = db.session.execute(
         text("""
-            SELECT customer_id, full_name, outstanding_balance
-            FROM v_customer_balances
-            WHERE customer_id = :cid AND shop_id = :sid
+            SELECT c.id as customer_id, c.full_name, v.outstanding_balance, s.business_name
+            FROM v_customer_balances v
+            JOIN customers c ON c.id = v.customer_id
+            JOIN shops s ON s.id = v.shop_id
+            WHERE v.customer_id = :cid AND v.shop_id = :sid
         """),
         {"cid": customer_id, "sid": shop_id},
     ).fetchone()
@@ -42,7 +42,7 @@ def send_reminder(customer_id):
     if not email:
         return jsonify({"error": "Customer has no email on file — add one before sending a reminder"}), 400
 
-    # Generate a Nomba checkout link for the outstanding amount
+    # Generate checkout link
     nomba = NombaClient()
     try:
         checkout_data = nomba.create_checkout_order(
@@ -57,28 +57,21 @@ def send_reminder(customer_id):
 
     message = (
         f"Dear {row.full_name},\n\n"
-        f"I hope this message finds you well.\n\n"
-        f"This is a polite reminder regarding your outstanding balance of "
-        f"₦{row.outstanding_balance:,.2f}.\n\n"
-        f"You can conveniently complete your payment using the secure link below:\n"
+        f"This is a friendly reminder that you have an outstanding balance of "
+        f"₦{row.outstanding_balance:,.2f} with {row.business_name or 'our store'}.\n\n"
+        f"Please make payment using the link below:\n"
         f"{checkout_link}\n\n"
-        f"Thank you for your prompt attention and for being a valued customer.\n\n"
-        f"Warm regards,\n"
-        f"{row.business_name or 'The SmartStock Team'}"
+        f"Thank you for your continued patronage.\n\n"
+        f"Best regards,\n"
+        f"{row.business_name or 'SmartStock Team'}"
     )
-    
-    # Email is the primary channel — SMS in Nigeria requires an NCC-approved
-    # Sender ID, which requires CAC business registration (a multi-day
-    # process outside this project's timeline). Email has no equivalent
-    # carrier-level gatekeeping.
+
     email_result = send_email(
         to_email=email,
         subject="Payment reminder from SmartStock",
         message=message,
     )
 
-    # SMS is still attempted as a bonus channel if Termii credentials are
-    # configured — it just doesn't block the reminder on failure.
     sms_result = send_sms(phone, message)
 
     overall_success = email_result["success"] or sms_result["success"]
@@ -101,4 +94,4 @@ def send_reminder(customer_id):
         "email_error": email_result.get("error"),
         "sms_sent": sms_result["success"],
         "sms_error": sms_result.get("error"),
-    }), 201 if overall_success else 207  # 207 = partial success (link made, nothing delivered)
+    }), 201 if overall_success else 207
