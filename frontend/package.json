@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:clean": "rm -rf node_modules/.vite && vite build",
     "lint": "oxlint",
     "start": "npx serve -s dist -l $PORT",
     "preview": "vite preview"
