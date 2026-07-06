@@ -34,7 +34,8 @@ class NombaClient:
             },
             timeout=15,
         )
-        resp.raise_for_status()
+        if resp.status_code != 200:
+            raise Exception(f"Nomba token request failed ({resp.status_code}): {resp.text}")
         data = resp.json()["data"]
 
         self._token = data["access_token"]
