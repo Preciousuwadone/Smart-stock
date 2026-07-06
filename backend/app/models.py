@@ -102,7 +102,7 @@ class Reminder(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     shop_id = db.Column(UUID(as_uuid=True), db.ForeignKey("shops.id"), nullable=False)
     customer_id = db.Column(UUID(as_uuid=True), db.ForeignKey("customers.id"), nullable=False)
-    channel = db.Column(db.String, default="sms")
+    channel = db.Column(db.String, nullable=False, default='email', check_constraint="channel IN ('sms', 'whatsapp', 'email')")
     message = db.Column(db.String, nullable=False)
     checkout_link = db.Column(db.String, nullable=True)
     status = db.Column(db.String, default="sent")

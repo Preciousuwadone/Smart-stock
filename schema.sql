@@ -185,6 +185,14 @@ CREATE TABLE reminders (
 
 CREATE INDEX idx_reminders_customer_id ON reminders(customer_id);
 
+-- Add 'email' as a valid channel
+ALTER TABLE reminders 
+DROP CONSTRAINT IF EXISTS reminders_channel_check;
+
+ALTER TABLE reminders 
+ADD CONSTRAINT reminders_channel_check 
+CHECK (channel IN ('sms', 'whatsapp', 'email'));
+
 -- ============================================================
 -- VIEW: derived outstanding balance per customer
 -- This is the single source of truth for "how much does X owe".
