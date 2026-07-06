@@ -39,12 +39,16 @@ def send_reminder(customer_id):
     phone = customer_row.phone
     email = customer_row.email
 
+    if not email:
+        return jsonify({"error": "Customer has no email on file — add one before sending a reminder"}), 400
+
     # Generate a Nomba checkout link for the outstanding amount
     nomba = NombaClient()
     try:
         checkout_data = nomba.create_checkout_order(
             amount=float(row.outstanding_balance),
             customer_id=customer_id,
+            customer_email=email,
         )
     except Exception as e:
         return jsonify({"error": f"Failed to generate payment link: {str(e)}"}), 502
