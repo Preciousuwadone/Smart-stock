@@ -86,7 +86,8 @@ export default function CustomerDetail() {
           ) : (
             <>
               <p>Checkout link: <a href={reminderResult.checkout_link} target="_blank" rel="noreferrer">{reminderResult.checkout_link}</a></p>
-              <p>SMS sent: {reminderResult.sms_sent ? "Yes" : `No (${reminderResult.sms_error})`}</p>
+              <p>Email sent: {reminderResult.email_sent ? "Yes" : `No (${reminderResult.email_error || "Unknown error"})`}</p>
+              <p>SMS sent: {reminderResult.sms_sent ? "Yes" : `No (${reminderResult.sms_error || "Not configured"})`}</p>
             </>
           )}
         </div>
