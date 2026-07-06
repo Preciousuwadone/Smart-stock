@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-     "start":"npx serve -s dist -l $PORT",
+    "start": "npx serve -s dist -l $PORT",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,7 +15,8 @@
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "serve": "^14.2.6"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
