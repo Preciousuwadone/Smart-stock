@@ -59,7 +59,7 @@ export default function CustomerDetail() {
         <p><strong>Total Paid:</strong> ₦{parseFloat(customer.balance.total_paid).toLocaleString()}</p>
         {customer.virtual_account && (
           <p><strong>Repayment account:</strong> {customer.virtual_account.account_number} ({customer.virtual_account.bank_name})
-            {customer.virtual_account.status === "simulated" && <em> — simulated</em>}
+            {/*customer.virtual_account.status === "simulated" && <em> — simulated</em>*/}
           </p>
         )}
       </div>

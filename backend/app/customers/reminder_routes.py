@@ -56,10 +56,17 @@ def send_reminder(customer_id):
     checkout_link = checkout_data["checkoutLink"]
 
     message = (
-        f"Hi {row.full_name}, you have an outstanding balance of "
-        f"N{row.outstanding_balance:,.2f}. Pay now: {checkout_link}"
+        f"Dear {row.full_name},\n\n"
+        f"I hope this message finds you well.\n\n"
+        f"This is a polite reminder regarding your outstanding balance of "
+        f"₦{row.outstanding_balance:,.2f}.\n\n"
+        f"You can conveniently complete your payment using the secure link below:\n"
+        f"{checkout_link}\n\n"
+        f"Thank you for your prompt attention and for being a valued customer.\n\n"
+        f"Warm regards,\n"
+        f"{row.business_name or 'The SmartStock Team'}"
     )
-
+    
     # Email is the primary channel — SMS in Nigeria requires an NCC-approved
     # Sender ID, which requires CAC business registration (a multi-day
     # process outside this project's timeline). Email has no equivalent
