@@ -20,7 +20,9 @@ class NombaClient:
         # recommendation, avoids racing a request against token expiry.
         if self._token and time.time() < self._token_expires_at - 300:
             return self._token
-
+        
+        print(f"DEBUG - PARENT_ACCOUNT_ID: {repr(current_app.config.get('NOMBA_PARENT_ACCOUNT_ID'))}")
+        
         resp = requests.post(
             f"{current_app.config['NOMBA_BASE_URL']}/v1/auth/token/issue",
             headers={
