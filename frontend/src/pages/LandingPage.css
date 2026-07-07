@@ -36,7 +36,7 @@
 
 /* Hero */
 .ss-hero {
-  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 64px;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 32px;
   align-items: center; padding: 64px 0 96px;
 }
 .ss-eyebrow {
@@ -121,7 +121,7 @@
   .ss-hero { 
     grid-template-columns: 1fr; 
     padding-top: 40px; 
-    gap: 40px;
+    gap: 24px;
   }
   .ss-features-grid { grid-template-columns: repeat(2, 1fr); }
   .ss-steps-grid { grid-template-columns: repeat(2, 1fr); }
@@ -141,7 +141,7 @@
 @media (max-width: 768px) {
   .ss-hero {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 20px;
     padding: 32px 0;
   }
 
