@@ -118,11 +118,16 @@
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .ss-hero { grid-template-columns: 1fr; padding-top: 40px; }
+  .ss-hero { 
+    grid-template-columns: 1fr; 
+    padding-top: 40px; 
+    gap: 40px;
+  }
   .ss-hero h1 { font-size: 36px; }
   .ss-features-grid { grid-template-columns: repeat(2, 1fr); }
   .ss-steps-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
 @media (max-width: 640px) {
   .ss-container { padding: 0 20px; }
   .ss-features-grid, .ss-steps-grid { grid-template-columns: 1fr; }
@@ -130,4 +135,6 @@
   .ss-hero-ctas, .ss-trust-strip { justify-content: center; }
   .ss-hero-copy { text-align: center; }
   .ss-hero-copy p { margin-left: auto; margin-right: auto; }
+  
+  .ss-hero h1 { font-size: 32px; line-height: 1.2; }
 }
