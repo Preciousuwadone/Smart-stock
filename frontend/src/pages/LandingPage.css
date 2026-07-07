@@ -1,5 +1,5 @@
 /* Full-bleed bands, centered content inside */
-.ss-root { width: 100%; }
+.ss-root { width: 100%; overflow-x: hidden; }
 .ss-band { width: 100%; }
 .ss-container { max-width: 1280px; margin: 0 auto; padding: 0 40px; }
 
