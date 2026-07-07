@@ -100,6 +100,23 @@ def list_customers():
         {"shop_id": shop_id},
     ).fetchall()
 
+    # The view above has no idea about risk scores — those live in a separate
+    # append-only history table (credit_scores), so pull each customer's most
+    # recent one in a single query rather than N+1-ing per row.
+    customer_ids = [row.customer_id for row in rows]
+    latest_tier_by_customer = {}
+    if customer_ids:
+        score_rows = db.session.execute(
+            text("""
+                SELECT DISTINCT ON (customer_id) customer_id, risk_tier
+                FROM credit_scores
+                WHERE customer_id = ANY(:customer_ids)
+                ORDER BY customer_id, created_at DESC
+            """),
+            {"customer_ids": customer_ids},
+        ).fetchall()
+        latest_tier_by_customer = {row.customer_id: row.risk_tier for row in score_rows}
+
     return jsonify([
         {
             "id": str(row.customer_id),
@@ -107,6 +124,7 @@ def list_customers():
             "total_credit": str(row.total_credit),
             "total_paid": str(row.total_paid),
             "outstanding_balance": str(row.outstanding_balance),
+            "risk_tier": latest_tier_by_customer.get(row.customer_id),
         }
         for row in rows
     ]), 200
