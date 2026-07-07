@@ -141,29 +141,42 @@
 
 /* Hero Responsiveness Fix */
 @media (max-width: 768px) {
+.ss-hero {
+  display: grid; 
+  grid-template-columns: 1.1fr 0.9fr; 
+  gap: 48px;
+  align-items: center; 
+  padding: 48px 0 64px;
+}
+
+.ss-hero h1 { 
+  font-size: 42px; 
+  line-height: 1.1; 
+  margin: 0 0 16px; 
+  letter-spacing: -0.02em; 
+}
+
+/* Mobile */
+@media (max-width: 768px) {
   .ss-hero {
     grid-template-columns: 1fr;
     gap: 32px;
     padding: 32px 0;
   }
   
-  .ss-hero h1 {
-    font-size: 32px;
-    line-height: 1.1;
-  }
-  
-  .ss-hero-sub {
-    font-size: 16px;
+  .ss-hero h1 { 
+    font-size: 32px; 
   }
   
   .ss-mock-card {
+    max-width: 300px;
     margin: 0 auto;
-    max-width: 320px;
   }
 }
 
 @media (max-width: 480px) {
-  .ss-hero h1 {
-    font-size: 28px;
+  .ss-hero h1 { 
+    font-size: 28px; 
   }
+}
 }
