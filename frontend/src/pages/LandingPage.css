@@ -36,10 +36,10 @@
 
 /* Hero */
 .ss-hero {
-  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 32px;
   align-items: center; padding: 64px 0 96px;
 }
-.ss-hero-copy { flex: 1 1 480px; max-width: 600px; }
+.ss-hero-copy { flex: 0 1 600px; max-width: 600px; }
 .ss-eyebrow {
   display: inline-flex; align-items: center; gap: 6px;
   background: var(--color-surface); color: var(--color-primary-dark);
@@ -52,7 +52,7 @@
 .ss-hero-ctas { display: flex; gap: 12px; margin: 28px 0 20px; flex-wrap: wrap; }
 .ss-trust-strip { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--color-text-secondary); }
 
-.ss-hero-visual { display: flex; justify-content: flex-end; flex: 0 0 auto; }
+.ss-hero-visual { display: flex; justify-content: flex-start; flex: 0 0 auto; }
 .ss-mock-card {
   background: var(--color-surface); border-radius: var(--radius); box-shadow: var(--shadow-md);
   padding: 20px; width: 100%; max-width: 380px; border: 1px solid var(--color-border);
