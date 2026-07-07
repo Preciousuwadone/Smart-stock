@@ -5,11 +5,11 @@ import RiskBadge from "../components/RiskBadge";
 import "./LandingPage.css";
 
 const FEATURES = [
-  { icon: Users, title: "Add Customers & Credit Sales", text: "Log a customer and their credit purchase in seconds — no notebook, no guesswork." },
+  { icon: Users, title: "Add Customers & Credit Sales", text: "Log a customer and their credit purchase in seconds, no notebook, no guesswork." },
   { icon: Landmark, title: "Dedicated Nomba Virtual Accounts", text: "Every customer gets their own account number to pay into. Money lands exactly where it should." },
   { icon: Sparkles, title: "AI Credit Scoring & Default Prediction", text: "SmartStock learns each customer's payment behaviour and flags who's likely to default, before it happens." },
   { icon: BellRing, title: "Automated Payment Reminders", text: "Reminders go out on their own by email, with a Nomba checkout link attached, so paying is one tap away." },
-  { icon: ShieldCheck, title: "Real-Time Payment Confirmation", text: "Nomba webhooks confirm payments instantly and update your dashboard — no manual reconciliation." },
+  { icon: ShieldCheck, title: "Real-Time Payment Confirmation", text: "Nomba webhooks confirm payments instantly and update your dashboard, no manual reconciliation." },
   { icon: BarChart3, title: "Full Credit Portfolio Dashboard", text: "See exactly who owes what, who's at risk, and how your credit book is trending, at a glance." },
 ];
 
